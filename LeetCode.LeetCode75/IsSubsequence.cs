@@ -8,12 +8,12 @@ public class IsSubsequence
         {
             answers.Clear();
             
-            return HasSubsequense(s, t);
+            return HasSubsequence(s, t);
         }
 
         private readonly Dictionary<(string, string), bool> answers = new();
 
-        private bool HasSubsequense(string s, string t)
+        private bool HasSubsequence(string s, string t)
         {
             string t1 = new(t.Where(s.Contains).ToArray());
 
@@ -47,7 +47,7 @@ public class IsSubsequence
                 string leftS = s.Substring(0, i);
                 string rightS = s.Substring(i);
                 
-                if (HasSubsequense(leftS, leftT) && HasSubsequense(rightS, rightT))
+                if (HasSubsequence(leftS, leftT) && HasSubsequence(rightS, rightT))
                 {
                     answers[(s, t1)] = true;
                     answers[(s, t)] = true;
