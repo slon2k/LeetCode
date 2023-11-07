@@ -6,41 +6,65 @@ public class LongestSubarrayAfterDeletingOneElement
     {
         public int LongestSubarray(int[] nums)
         {
-            int left = 0, right = 0, maxLength = 0, count = nums[0] == 0 ? 1 : 0;
+            int maxLength = 0;
 
-            while (right < nums.Length)
+            var queue = new BinaryQueue();
+
+            foreach (var item in nums)
             {
+                queue.Add(item);
 
-                if (count <= 1)
+                while (queue.GetZeroCount() > 1)
                 {
-                    int length = right - left;
-                    
-                    maxLength = length > maxLength ? length : maxLength;
-                    
-                    right++;
-
-                    if (right == nums.Length)
-                    {
-                        break;
-                    }
-
-                    if (nums[right] == 0)
-                    {
-                        count++;
-                    }
-                    
-                    continue;
+                    queue.Remove();
                 }
 
-                if (nums[left] == 0)
-                {
-                    count--;
-                }
+                int length = queue.GetLength() - 1;
 
-                left++;
+                if (length > maxLength)
+                {
+                    maxLength = length;
+                }
             }
 
             return maxLength;
+        }
+
+        private class BinaryQueue
+        {
+            private Queue<int> queue = new Queue<int>();
+
+            private int count = 0;
+
+            public void Add(int x)
+            {
+                queue.Enqueue(x);
+
+                if (x == 0)
+                {
+                    count++;
+                }
+            }
+
+            public void Clear()
+            {
+                queue.Clear();
+                count = 0;
+            }
+
+            public void Remove()
+            {
+                int x = queue.Dequeue();
+
+                if (x == 0)
+                {
+                    count--;
+                }
+            }
+
+            public int GetZeroCount() => count;
+
+            public int GetLength() => queue.Count;
         }
     }
 }
