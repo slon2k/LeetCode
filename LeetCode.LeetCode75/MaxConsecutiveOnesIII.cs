@@ -8,68 +8,63 @@ public class MaxConsecutiveOnesIII
     {
         public int LongestOnes(int[] nums, int k)
         {
-            int left = 0, right = 0;
-
-            int count = k;
-
-            int length = 0;
-
             int maxLength = 0;
 
-            while(right < nums.Length)
+            var queue = new BinaryQueue();
+
+            foreach (int x in nums)
             {
-                if (nums[right] == 1)
-                {
-                    right++;
-                    length++;
-                    maxLength = length > maxLength ? length : maxLength;
+                queue.Add(x);
 
-                    continue;
+                while(!queue.IsEmpty && queue.ZerosCount > k)
+                {
+                    queue.Remove();
                 }
 
-                if (count > 0)
-                {
-                    right++;
-                    count--;
-                    length++;
-
-                    maxLength = length > maxLength ? length : maxLength;
-
-                    continue;
-                }
-                
-                if (right + 1 == nums.Length)
-                {
-                    break;
-                }
-
-                if (left == right)
-                {
-                    left++;
-                    right++;
-
-                    continue;
-                }
-
-                if (nums[left] == 0)
-                {
-                    left++;
-
-                    if (count < k) 
-                    {
-                        count++;
-                    }
-
-                    length--;
-
-                    continue;
-                }
-
-                left++;
-                length--;
+                maxLength = Math.Max(maxLength, queue.Count);
             }
 
             return maxLength;
         }
+
+        private class BinaryQueue
+        {
+            private int count = 0;
+
+            private Queue<int> queue = new();
+
+            public void Add(int x)
+            {
+                queue.Enqueue(x);
+
+                if (x == 0)
+                {
+                    count++;
+                }
+            }
+
+            public void Clear()
+            {
+                queue.Clear();
+                count = 0;
+            }
+
+            public void Remove()
+            {
+                int x = queue.Dequeue();
+
+                if (x == 0)
+                {
+                    count--;
+                }
+            }
+
+            public int Count => queue.Count;
+
+            public bool IsEmpty => queue.Count == 0;
+
+            public int ZerosCount => count;
+        }
+
     }
 }
