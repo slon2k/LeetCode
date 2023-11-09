@@ -1,6 +1,4 @@
-﻿using static LeetCode.LeetCode75.DeleteMiddleNode.Solution;
-
-namespace LeetCode.LeetCode75;
+﻿namespace LeetCode.LeetCode75;
 
 public class OddEvenLinkedList
 {
