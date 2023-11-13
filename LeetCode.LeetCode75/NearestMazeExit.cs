@@ -12,32 +12,32 @@ public class NearestMazeExit
             this.maze = maze;
             this.entrance = entrance;
 
-            Queue<(int, int)> queue = new();
+            Queue<(int x, int y, int step)> queue = new();
 
-            Dictionary<(int x, int y), int> pathLengths = new();
+            int height = maze.Length;
+            int width = maze[0].Length;
 
-            HashSet<(int x, int y)> visited = new();
+            int[,] visited = new int[height, width];
 
-            pathLengths[(entrance[0], entrance[1])] = 0;
-
-            queue.Enqueue((entrance[0], entrance[1]));
+            queue.Enqueue((entrance[0], entrance[1], 0));
 
             while (queue.Count > 0)
             {
-                (int x, int y) = queue.Dequeue();
-                
-                visited.Add((x, y));
+                (int x, int y, int step) = queue.Dequeue();
 
-                if (IsExit(x, y))
-                {
-                    return pathLengths[(x, y)];
-                }
+                if (visited[x, y] == 0) 
+                { 
+                    visited[x, y] = 1;
 
-                foreach (var item in Neighbors(x, y).Where(c => !visited.Contains(c)))
-                {
-                    pathLengths[(item.x, item.y)] = pathLengths[(x, y)] + 1;
+                    if (IsExit(x, y))
+                    {
+                        return step;
+                    }
 
-                    queue.Enqueue(item);
+                    foreach (var item in Neighbors(x, y).Where(c => visited[c.x, c.y] == 0))
+                    {
+                        queue.Enqueue((item.x, item.y, step + 1));
+                    }
                 }
             }
 
@@ -48,31 +48,27 @@ public class NearestMazeExit
 
         private bool IsExit(int x, int y) => IsEdgeCell(x, y) && (x != entrance[0] || y != entrance[1]);
 
+        private char GetCell(int x, int y)
+        {
+            if (x >= 0 && y >=0 && x < maze.Length && y < maze[0].Length)
+            {
+                return maze[x][y];
+            }
+
+            return '#';
+        }
+
         private List<(int x, int y)> Neighbors(int x, int y)
         {
-            List<(int x, int y)> neighbors = new();
-
-            if (x - 1 >= 0 && maze[x - 1][y] == '.')
+            List<(int x, int y)> neighbors = new()
             {
-                neighbors.Add((x - 1, y));
-            }
+                (x - 1, y),
+                (x, y - 1),
+                (x + 1, y),
+                (x, y + 1)
+            };
 
-            if (y - 1 >= 0 && maze[x][y - 1] == '.')
-            {
-                neighbors.Add((x, y - 1));
-            }
-
-            if (x + 1 < maze.Length && maze[x + 1][y] == '.')
-            {
-                neighbors.Add((x + 1, y));
-            }
-
-            if (y + 1 < maze[0].Length && maze[x][y + 1] == '.')
-            {
-                neighbors.Add((x, y + 1));
-            }
-
-            return neighbors;
+            return neighbors.Where(c => GetCell(c.x, c.y) == '.').ToList();
         }
     }
 }
