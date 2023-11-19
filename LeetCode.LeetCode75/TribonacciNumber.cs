@@ -7,30 +7,27 @@ public class TribonacciNumber
         public int Tribonacci(int n)
         {
 
-            if (n == 0) return 0;
-            if (n == 1) return 1;
-            if (n == 2) return 1;
+            if (n == 0) 
+                return 0;
 
-            Stack<int> stack = new Stack<int>();
+            if (n == 1) 
+                return 1;
 
-            stack.Push(0);
-            stack.Push(1);
-            stack.Push(1);
+            if (n == 2) 
+                return 1;
+
+            int[] buffer = new int[3];
+
+            (buffer[0], buffer[1], buffer[2]) = (0, 1, 1);
 
             for (int i = 3; i <= n; i++)
             {
-                int n2 = stack.Pop();
-                int n1 = stack.Pop();
-                int n0 = stack.Pop();
+                int sum = buffer[0] + buffer[1] + buffer[2];
 
-                int sum = n0 + n1 + n2;
-
-                stack.Push(n1);
-                stack.Push(n2);
-                stack.Push(sum);
+                (buffer[0], buffer[1], buffer[2]) = (buffer[1], buffer[2], sum);
             }
 
-            return stack.Pop();
+            return buffer[2];
         }
     }
 }
