@@ -1,6 +1,4 @@
-﻿using System.Linq;
-
-namespace LeetCode.LeetCode75;
+﻿namespace LeetCode.LeetCode75;
 
 public class DailyTemperatures
 {
