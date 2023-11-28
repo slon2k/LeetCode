@@ -1,10 +1,31 @@
-﻿namespace LeetCode.LeetCode75;
+﻿using System.Collections.Generic;
+
+namespace LeetCode.LeetCode75;
 
 public class KthLargestElement
 {
     public class Solution
     {
         public int FindKthLargest(int[] nums, int k)
+        {
+            var priorityQueue = new PriorityQueue<int, int>();
+
+            foreach (int x in nums)
+            {
+                priorityQueue.Enqueue(x, x);
+
+                if (priorityQueue.Count > k)
+                {
+                    priorityQueue.Dequeue();
+                }
+            }
+
+            return priorityQueue.Dequeue();
+
+        }
+
+
+        public int FindKthLargestMinHeap(int[] nums, int k)
         {
             var heap = new MinHeap(nums.Length);
 
@@ -27,59 +48,6 @@ public class KthLargestElement
             }
 
             return heap.GetMin();
-        }
-
-        public int FindKthLargestQueue(int[] nums, int k)
-        {
-            var priorityQueue = new PriorityQueue();
-
-            foreach (int x in nums)
-            {
-                priorityQueue.Add(x);
-
-                if (priorityQueue.Count > k)
-                {
-                    priorityQueue.RemoveLast();
-                }
-            }
-
-            var list = priorityQueue.Values.Take(k);
-
-            return list.Last();
-
-        }
-
-        public class PriorityQueue
-        {
-            private LinkedList<int> values = new();
-
-            public void Add(int item)
-            {
-                var node = values.First;
-
-                while (node is not null)
-                {
-                    if (item > node.Value)
-                    {
-                        values.AddBefore(node, item);
-                        
-                        return;
-                    }
-
-                    node = node.Next;
-                }
-
-                values.AddLast(item);
-            }
-
-            public void RemoveLast()
-            {
-                values.RemoveLast();
-            }
-
-            public int Count => values.Count;
-
-            public List<int> Values => values.ToList();
         }
     
         public class MaxHeap
