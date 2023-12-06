@@ -10,22 +10,6 @@ public class MaximumSubsequenceScore
 
             List<(int num1, int num2, long sum)> numbers = new();
 
-            if (k == 1)
-            {
-                for (int i = 0; i < nums1.Length; i++)
-                {
-                    long current = nums1[i] * nums2[i];
-                    
-                    if (current > result)
-                    {
-                        result = current;
-                    }
-                }
-
-                return result;
-            }
-
-            
             for (int i = 0; i < nums1.Length; i++)
             {
                 numbers.Add((nums1[i], nums2[i], 0));
@@ -39,19 +23,19 @@ public class MaximumSubsequenceScore
             {
                 var item = numbers[i];
 
+                numbers[i] = (item.num1, item.num2, queue.Sum + item.num1);
+
                 queue.Enqueue(item.num1);
 
                 if (queue.Count > k - 1)
                 {
                     queue.Dequeue();
                 }
-
-                numbers[i] = (item.num1, item.num2, queue.Sum);
             }
 
-            for (int i = numbers.Count - k + 1; i > 0; i--)
+            for (int i = numbers.Count - k; i >= 0; i--)
             {
-                long currentResult = numbers[i - 1].num2 * (numbers[i - 1].num1 + numbers[i].sum);
+                long currentResult = numbers[i].num2 * numbers[i].sum;
 
                 if (currentResult > result)
                 {
