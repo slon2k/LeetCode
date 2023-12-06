@@ -8,44 +8,85 @@ public class MaximumSubsequenceScore
         {
             long result = long.MinValue;
 
-            for (int i = 0; i < nums2.Length; i++)
+            List<(int num1, int num2, long sum)> numbers = new();
+
+            if (k == 1)
             {
-                int min = nums2[i];
-
-                PriorityQueue<int, int> priorityQueue = new();
-
-                for (int j = 0; j < nums1.Length; j++)
+                for (int i = 0; i < nums1.Length; i++)
                 {
-                    if (i == j || nums2[j] < min)
+                    long current = nums1[i] * nums2[i];
+                    
+                    if (current > result)
                     {
-                        continue;
-                    }
-
-                    priorityQueue.Enqueue(nums1[j], nums1[j]);
-
-                    if (priorityQueue.Count > k - 1)
-                    {
-                        priorityQueue.Dequeue();
+                        result = current;
                     }
                 }
 
-                if (priorityQueue.Count == k - 1)
+                return result;
+            }
+
+            
+            for (int i = 0; i < nums1.Length; i++)
+            {
+                numbers.Add((nums1[i], nums2[i], 0));
+            }
+
+            numbers.Sort((x, y) => x.num2.CompareTo(y.num2));
+
+            var queue = new PriorityQueue();
+
+            for (int i = numbers.Count - 1; i >= 0; i--)
+            {
+                var item = numbers[i];
+
+                queue.Enqueue(item.num1);
+
+                if (queue.Count > k - 1)
                 {
-                    long sum = nums1[i];
+                    queue.Dequeue();
+                }
 
-                    while(priorityQueue.Count > 0)
-                    {
-                        sum += priorityQueue.Dequeue();
-                    }
+                numbers[i] = (item.num1, item.num2, queue.Sum);
+            }
 
-                    if(sum * min > result)
-                    {
-                        result = sum * min;
-                    }
+            for (int i = numbers.Count - k + 1; i > 0; i--)
+            {
+                long currentResult = numbers[i - 1].num2 * (numbers[i - 1].num1 + numbers[i].sum);
+
+                if (currentResult > result)
+                {
+                    result = currentResult;
                 }
             }
 
             return result;
+        }
+
+        private class PriorityQueue
+        {
+            private PriorityQueue<int, int> queue = new();
+
+            private long sum = 0;
+
+            public int Count => queue.Count;
+
+            public long Sum => sum;
+
+            public void Enqueue(int item)
+            {
+                sum += item;
+
+                queue.Enqueue(item, item);
+            }
+
+            public int Dequeue()
+            {
+                int item = queue.Dequeue();
+
+                sum -= item;
+
+                return item;
+            }
         }
     }
 }
