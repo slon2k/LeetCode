@@ -3,9 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetCode.LeetCode75", "LeetCode.LeetCode75\LeetCode.LeetCode75.csproj", "{0E54F3F3-85AF-4C17-9A39-DB5C4605F834}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeetCode.LeetCode75", "LeetCode.LeetCode75\LeetCode.LeetCode75.csproj", "{0E54F3F3-85AF-4C17-9A39-DB5C4605F834}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetCode.LeetCode75Tests", "LeetCode.LeetCode75Tests\LeetCode.LeetCode75Tests.csproj", "{2C35CBA6-DC3A-47C3-ADDF-0B85F3425D79}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LeetCode.LeetCode75Tests", "LeetCode.LeetCode75Tests\LeetCode.LeetCode75Tests.csproj", "{2C35CBA6-DC3A-47C3-ADDF-0B85F3425D79}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetCode.LeetCode150", "LeetCode150\LeetCode.LeetCode150.csproj", "{6C372AC7-0053-4ACF-8560-DB6147A014C8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LeetCode.LeetCode150Tests", "LeetCode.LeetCode150Tests\LeetCode.LeetCode150Tests.csproj", "{7080B35D-E48F-486D-9A76-2223E38B65DA}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +25,14 @@ Global
 		{2C35CBA6-DC3A-47C3-ADDF-0B85F3425D79}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2C35CBA6-DC3A-47C3-ADDF-0B85F3425D79}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2C35CBA6-DC3A-47C3-ADDF-0B85F3425D79}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6C372AC7-0053-4ACF-8560-DB6147A014C8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6C372AC7-0053-4ACF-8560-DB6147A014C8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6C372AC7-0053-4ACF-8560-DB6147A014C8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6C372AC7-0053-4ACF-8560-DB6147A014C8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7080B35D-E48F-486D-9A76-2223E38B65DA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7080B35D-E48F-486D-9A76-2223E38B65DA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7080B35D-E48F-486D-9A76-2223E38B65DA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7080B35D-E48F-486D-9A76-2223E38B65DA}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
