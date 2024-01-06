@@ -18,11 +18,8 @@ public class BinaryTreeFromPreorderInorderTraversal
 
             var root = new TreeNode(rootValue);
 
-            var preorderLeft = preorder.Where(x => IsAhead(x, rootValue, inorder)).ToArray() ?? Array.Empty<int>();
-            var preorderRight = preorder.Where(x => IsBehind(x, rootValue, inorder)).ToArray() ?? Array.Empty<int>();
-
-            var inorderLeft = inorder.Where(x => IsAhead(x, rootValue, inorder)).ToArray() ?? Array.Empty<int>();
-            var inorderRight = inorder.Where(x => IsBehind(x, rootValue, inorder)).ToArray() ?? Array.Empty<int>();
+            var (inorderLeft, inorderRight) = SplitInorder(inorder, rootValue);
+            var (preorderLeft, preorderRight) = SplitPreorder(preorder, inorderLeft);
 
             root.left = Build(preorderLeft, inorderLeft);
             root.right = Build(preorderRight, inorderRight);
@@ -30,7 +27,37 @@ public class BinaryTreeFromPreorderInorderTraversal
             return root;
         }
 
-        private (int[] left, int[] right) Split(int[] array, int value)
+        private (int[] left, int[] right) SplitPreorder(int[] array, int[] inorderLeft)
+        {
+            List<int> left = new();
+            List<int> right = new();
+
+            HashSet<int> set = new(inorderLeft);
+
+            bool isRight = false;
+
+            for (int i = 1; i < array.Length; i++)
+            {
+                if (isRight)
+                {
+                    right.Add(array[i]);
+                    continue;
+                }
+
+                if (!set.Contains(array[i]))
+                {
+                    isRight = true;
+                    right.Add(array[i]);
+                    continue;
+                }
+
+                left.Add(array[i]);
+            }
+
+            return (left.ToArray(), right.ToArray());
+        }
+
+        private (int[] left, int[] right) SplitInorder(int[] array, int value)
         {
             List<int> left = new();
             List<int> right = new();
@@ -56,10 +83,6 @@ public class BinaryTreeFromPreorderInorderTraversal
 
             return (left.ToArray(), right.ToArray());
         }
-
-        private bool IsAhead(int num1, int num2, int[] array) => Array.IndexOf(array, num1) < Array.IndexOf(array, num2);
-
-        private bool IsBehind(int num1, int num2, int[] array) => Array.IndexOf(array, num1) > Array.IndexOf(array, num2);
 
         public class TreeNode
         {
