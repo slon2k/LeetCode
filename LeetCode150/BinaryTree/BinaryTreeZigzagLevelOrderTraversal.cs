@@ -45,18 +45,4 @@ internal class BinaryTreeZigzagLevelOrderTraversal
             return result.Select((level, index) => index % 2 == 0 ? level : level.Reverse().ToList()).ToList();
         }
     }
-
-    public class TreeNode
-    {
-        public int val;
-        public TreeNode? left;
-        public TreeNode? right;
-
-        public TreeNode(int val = 0, TreeNode? left = null, TreeNode? right = null)
-        {
-            this.val = val;
-            this.left = left;
-            this.right = right;
-        }
-    }
 }
