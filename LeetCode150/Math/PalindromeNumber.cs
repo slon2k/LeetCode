@@ -11,20 +11,20 @@ internal class PalindromeNumber
                 return false;
             }
 
-            var digits = GetDigits(x);
+            var str = Convert.ToString(x);
 
-            var reversed = digits.Reverse();
+            int left = 0;
+            int right = str.Length - 1;
 
-            return digits.SequenceEqual(reversed);
-        }
-
-        IEnumerable<int> GetDigits(int number)
-        {
-            while (number > 0)
+            while (left < right)
             {
-                yield return number % 10;
-                number /= 10;
+                if (str[left++] != str[right--])
+                {
+                    return false;
+                }
             }
+           
+            return true;
         }
     }
 }
