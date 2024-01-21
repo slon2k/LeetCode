@@ -1,4 +1,4 @@
-﻿namespace LeetCode.LeetCode150.Math;
+﻿namespace LeetCode.LeetCode150.Mathematics;
 
 internal class PlusOne
 {
