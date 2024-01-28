@@ -17,47 +17,37 @@ public class SnakesAndLaddersTests
 
     public class SnakesAndLaddersTestData : TheoryData<int[][], int>
     {
-        private readonly List<List<int>> board1 = new()
-        {
-            new List<int> { -1, -1, -1, -1, -1, -1 },
-            new List<int> { -1, -1, -1, -1, -1, -1 },
-            new List<int> { -1, -1, -1, -1, -1, -1 },
-            new List<int> { -1, 35, -1, -1, 13, -1 },
-            new List<int> { -1, -1, -1, -1, -1, -1 },
-            new List<int> { -1, 15, -1, -1, -1, -1 }
-        };
+        private readonly int[][] board1 =
+        [
+            [-1, -1, -1, -1, -1, -1],
+            [-1, -1, -1, -1, -1, -1],
+            [-1, -1, -1, -1, -1, -1],
+            [-1, 35, -1, -1, 13, -1],
+            [-1, -1, -1, -1, -1, -1],
+            [-1, 15, -1, -1, -1, -1]
+        ];
 
-        private readonly List<List<int>> board2 = new()
-        {
-            new List<int> { -1, -1 },
-            new List<int> { -1, 3 },
-        };
+        private readonly int[][] board2 =
+        [
+            [-1, -1],
+            [-1, 3],
+        ];
 
-        private readonly List<List<int>> board3 = new()
-        {
-            new List<int> { 1, 1, -1 },
-            new List<int> { 1, 1, 1 },
-            new List<int> { -1, 1, 1 },
-        };
+        private readonly int[][] board3 =
+        [
+            [1, 1, -1],
+            [1, 1, 1],
+            [-1, 1, 1],
+        ];
 
-        private static List<List<int>> GetBoard4()
-        {
-            var board = new List<List<int>>();
-
-            for (int i = 0; i < 20; i++)
-            {
-                board.Add(Enumerable.Repeat(-1, 20).ToList());
-            }
-
-            return board;
-        }
+        private static int[][] Board4 => Enumerable.Repeat(Enumerable.Repeat(-1, 20).ToArray(), 20).ToArray();
 
         public SnakesAndLaddersTestData()
         {
-            Add(board1.Select(x => x.ToArray()).ToArray(), 4);
-            Add(board2.Select(x => x.ToArray()).ToArray(), 1);
-            Add(board3.Select(x => x.ToArray()).ToArray(), -1);
-            Add(GetBoard4().Select(x => x.ToArray()).ToArray(), 67);
+            Add(board1, 4);
+            Add(board2, 1);
+            Add(board3, -1);
+            Add(Board4, 67);
         }
     }
 }
