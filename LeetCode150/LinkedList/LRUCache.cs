@@ -1,143 +1,78 @@
 ﻿namespace LeetCode.LeetCode150.LinkedList;
 
-public class LRUCache
+public class LRUCache(int capacity) : LRUCache<int, int>(capacity, -1);
+
+public class LRUCache<TKey, TValue> where TKey : notnull
 {
     private readonly int capacity;
 
-    private int size = 0;
+    private readonly TValue defaultValue;
 
-    private ListNode? head = null;
+    private readonly LinkedList<TKey> list = []; 
 
-    private ListNode? tail = null;
+    private readonly Dictionary<TKey, Item> values = [];
 
-    public LRUCache(int capacity)
+    protected LRUCache(int capacity, TValue defaultValue)
     {
+        ArgumentOutOfRangeException.ThrowIfNegative(capacity);
+
         this.capacity = capacity;
+        this.defaultValue = defaultValue;
     }
 
-    public int Get(int key)
+    public TValue Get(TKey key)
     {
-        var (prev, node) = Find(key);
-
-        if (node is null)
+        if (values.TryGetValue(key, out var item))
         {
-            return -1;
-        }
-
-        int value = node.Value;
-
-        RemoveNode(prev, node);
-
-        AddNode(key, value);
-
-        return value;
-    }
-
-    private void AddNode(int key, int value)
-    {
-        ListNode node = new(key, value);
-
-        if (head is null)
-        {
-            head = node;
-            tail = head;
-            size = 1;
-
-            return;
-        };
-
-        tail.Next = node;
-        tail = tail.Next;
-
-        size++;
-
-        if (size > capacity)
-        {
-            head = head.Next;
-            size--;
-        }
-
-        return;
-    }
-
-    private void RemoveNode(ListNode? prev, ListNode node)
-    {
-        if (prev is null)
-        {
-            head = node.Next;
-
-            if (head is null)
+            if (item is null)
             {
-                tail = null;
+                values.Remove(key);
+                return defaultValue;
             }
 
-            size--;
+            Access(item.Node);
 
+            return item.Value;
+        }
+
+        return defaultValue;
+    }
+
+    public void Put(TKey key, TValue value)
+    {
+        if (values.TryGetValue(key, out var item))
+        {
+            item.Value = value;
+            Access(item.Node);
             return;
         }
 
-        prev.Next = node.Next;
-
-        size--;
-
-        if (prev.Next is null)
+        if (values.Count == capacity)
         {
-            tail = prev;
-        }
-    }
-
-    public void Put(int key, int value)
-    {
-        if (head is null)
-        {
-            head = new(key, value);
-            tail = head;
-            size = 1;
-
-            return;
-        }
-
-        var (prev, node) = Find(key);
-
-        if (node is not null)
-        {
-            RemoveNode(prev, node);
-        }
-
-        AddNode(key, value);
-    }
-
-    private (ListNode? prev, ListNode? node) Find(int key)
-    {
-        ListNode? prev = null;
-        ListNode? node = head;
-
-        while (node is not null)
-        {
-            if (node.Key.Equals(key))
+            var last = list.Last;
+            
+            if (last is not null)
             {
-                return (prev, node);
+                values.Remove(last.Value);
+                list.Remove(last);
             }
-
-            prev = node;
-            node = node.Next;
         }
 
-        return (null, null);
+        var node = list.AddFirst(key);
+
+        values.Add(key, new Item(value, node));
     }
 
-    private class ListNode
+    private void Access(LinkedListNode<TKey> node) 
     {
-        public ListNode(int key, int value)
-        {
-            Key = key;
-            Value = value;
-        }
-
-        public int Key { get; init; }
-
-        public int Value { get; set; }
-
-        public ListNode? Next { get; set; } = null;
+        list.Remove(node);
+        list.AddFirst(node);
     }
+
+    private class Item (TValue value, LinkedListNode<TKey> node)
+    {
+        public TValue Value { get; set; } = value;
+
+        public LinkedListNode<TKey> Node { get; set; } = node;
+    };
 }
