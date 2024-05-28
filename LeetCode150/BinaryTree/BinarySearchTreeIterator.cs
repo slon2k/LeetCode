@@ -2,37 +2,67 @@
 
 public class BSTIterator
 {
-    private readonly Stack<TreeNode> stack = new();
+    private readonly TreeNode root;
+
+    private readonly BSTIterator? leftIterator;
+    private readonly BSTIterator? rightIterator;
+
+    private bool visited = false;
 
     public BSTIterator(TreeNode root)
     {
-        stack.Clear();
+        this.root = root;
 
         if (root is not null)
         {
-            stack.Push(root);
-        }
+            leftIterator = root.left is not null ? new BSTIterator(root.left) : null;
+            rightIterator = root.right is not null ? new BSTIterator(root.right) : null;
+        }  
     }
 
     public int Next()
     {
-        TreeNode node = stack.Pop();
-
-        if (node.right is not null)
+        if ((leftIterator is not null) && leftIterator.HasNext())
         {
-            stack.Push(node.right);
+            return leftIterator.Next();
         }
 
-        if (node.left is not null)
+        if (!visited)
         {
-            stack.Push(node.left);
+            visited = true;
+            return root.val;
         }
 
-        return node.val;
+        if ((rightIterator is not null) && rightIterator.HasNext())
+        {
+            return rightIterator.Next();
+        }
+
+        throw new InvalidOperationException("According to the task, we assume that next is always valid");
     }
 
     public bool HasNext()
     {
-        return stack.Count > 0;
+        if (root is null)
+        {
+            return false;
+        }
+
+        if (!visited)
+        {
+            return true;
+        }
+
+        if ((leftIterator is not null) && leftIterator.HasNext())
+        {
+            return true;
+        }
+
+        if ((rightIterator is not null) && rightIterator.HasNext())
+        {
+            return true;
+        }
+
+        return false;
     }
 }
