@@ -4,77 +4,48 @@ public class LongestPalindromicSubstring
 {
     public class Solution
     {
-        private readonly HashSet<string> palindromes = new();
-
-        private readonly Dictionary<string, string> results = new();
+        private readonly HashSet<(int, int)> palindromes = [];
 
         public string LongestPalindrome(string s)      
         {
             palindromes.Clear();
-            results.Clear();
-
             return FindPalindrome(s);
         }
 
 
         private string FindPalindrome(string s)
         {
-            if(IsPalindrome(s))
+            string answer = "";
+
+            for (int i = 0; i < s.Length; i++)
             {
-                results[s] = s;
-                return s;
+                palindromes.Add((i, i));
+
+                answer = s.Substring(i, 1);
             }
 
-            if(results.ContainsKey(s))
+            for (int i = 1; i < s.Length; i++)
             {
-                return results[s];
+                if (s[i - 1] == s[i])
+                {
+                    palindromes.Add((i - 1, i));
+                    answer = s.Substring(i - 1, 2);
+                }
             }
 
-
-            string leftSubstring = s[..^1];
-            string left = FindPalindrome(leftSubstring);
-
-            string rightSubstring = s[1..];
-            string right = FindPalindrome(rightSubstring);
-
-            if(left.Length >= right.Length)
+            for (int size = 2; size < s.Length; size++)
             {
-                results[s] = left;
-                return left;
-            }
-            else
-            {
-                results[s] = right;
-                return right;
-            }
-        }
-
-        private bool IsPalindrome(string s)
-        {
-            if (s.Length <= 1)
-            {
-                return true;
+                for(int i = 0; i + size < s.Length; i++)
+                {
+                    if (s[i] == s[i + size] && palindromes.Contains((i + 1, i + size - 1)))
+                    {
+                        palindromes.Add((i, i + size));
+                        answer = s.Substring(i, size + 1);
+                    }
+                }
             }
 
-            if (s[0] != s[^1])
-            {
-                return false;
-            }
-
-            if (palindromes.Contains(s))
-            {
-                return true;
-            }
-
-            string substring = s[1..^1];
-            bool result = IsPalindrome(substring);
-
-            if (result)
-            {
-                palindromes.Add(s);
-            }
-
-            return result;
+            return answer;
         }
     }
 }
