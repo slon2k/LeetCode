@@ -4,11 +4,12 @@ public class LongestPalindromicSubstring
 {
     public class Solution
     {
-        private readonly HashSet<(int, int)> palindromes = [];
+        const int maxSize = 1000;
+
+        private readonly bool[,] palindromes = new bool[maxSize, maxSize];
 
         public string LongestPalindrome(string s)      
         {
-            palindromes.Clear();
             return FindPalindrome(s);
         }
 
@@ -19,7 +20,7 @@ public class LongestPalindromicSubstring
 
             for (int i = 0; i < s.Length; i++)
             {
-                palindromes.Add((i, i));
+                palindromes[i, i] = true;
 
                 answer = s.Substring(i, 1);
             }
@@ -28,7 +29,7 @@ public class LongestPalindromicSubstring
             {
                 if (s[i - 1] == s[i])
                 {
-                    palindromes.Add((i - 1, i));
+                    palindromes[i - 1, i] = true;
                     answer = s.Substring(i - 1, 2);
                 }
             }
@@ -37,9 +38,9 @@ public class LongestPalindromicSubstring
             {
                 for(int i = 0; i + size < s.Length; i++)
                 {
-                    if (s[i] == s[i + size] && palindromes.Contains((i + 1, i + size - 1)))
+                    if (s[i] == s[i + size] && palindromes[i + 1, i + size - 1] == true)
                     {
-                        palindromes.Add((i, i + size));
+                        palindromes[i, i + size] = true;
                         answer = s.Substring(i, size + 1);
                     }
                 }
