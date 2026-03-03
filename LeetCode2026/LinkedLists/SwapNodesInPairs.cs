@@ -19,6 +19,4 @@ public class SwapNodesInPairs
             return second;
         }
     }
-
-
 }
