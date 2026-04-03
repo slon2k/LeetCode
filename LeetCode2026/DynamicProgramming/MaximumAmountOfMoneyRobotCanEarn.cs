@@ -24,7 +24,7 @@ public class MaximumAmountOfMoneyRobotCanEarn
                 for (int j = 0; j < n; j++)
                 {
                     int currentCoins = coins[i][j];
-                    if (i == 0 && j == 0)
+                    if (i == 0 && j == 0)           
                     {
                         dp[0, 0, 0] = currentCoins;
                         dp[0, 0, 1] = 0; // Neutralize the first cell
