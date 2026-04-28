@@ -45,12 +45,12 @@ public class CheckIfThereIsValidPathInGrid
                 var to = new Vertex(i + direction.To.X, j + direction.To.Y);
                 graph[vertex] = [];
                 
-                if (IsValidVertex(from, grid) && CanConnectBack(vertex, from, grid))
+                if (IsValidVertex(from, grid) && CanConnectBack(from, vertex, grid))
                 {
                     graph[vertex].Add(from);
                 }
 
-                if (IsValidVertex(to, grid) && CanConnectBack(vertex, to, grid))
+                if (IsValidVertex(to, grid) && CanConnectBack(to, vertex, grid))
                 {
                     graph[vertex].Add(to);
                 }
