@@ -18,10 +18,27 @@ public class MinimumJumpsToReachEndViaPrimeTeleportation
             return 0;
         }
 
-        var graph = PopulateGraph(nums);
+        int maxValue = 0;
+        var primeValues = new HashSet<int>();
+
+        for (int i = 0; i < n; i++)
+        {
+            if (nums[i] > maxValue)
+            {
+                maxValue = nums[i];
+            }
+
+            if (IsPrime(nums[i]))
+            {
+                primeValues.Add(nums[i]);
+            }
+        }
+
+        var indicesByPrime = BuildIndicesByPrimeFactor(nums, primeValues, maxValue);
 
         var visited = new HashSet<int>();
         var queue = new Queue<(int index, int jumps)>();
+        var usedPrimeTeleport = new HashSet<int>();
         queue.Enqueue((0, 0));
         visited.Add(0);
 
@@ -33,12 +50,56 @@ public class MinimumJumpsToReachEndViaPrimeTeleportation
                 return jumps;
             }
 
-            foreach (var neighbor in graph[index])
+            // Adjacent steps
+            if (index > 0)
             {
-                if (!visited.Contains(neighbor))
+                int left = index - 1;
+                if (!visited.Contains(left))
                 {
-                    visited.Add(neighbor);
-                    queue.Enqueue((neighbor, jumps + 1));
+                    if (left == n - 1)
+                    {
+                        return jumps + 1;
+                    }
+
+                    visited.Add(left);
+                    queue.Enqueue((left, jumps + 1));
+                }
+            }
+
+            if (index < n - 1)
+            {
+                int right = index + 1;
+                if (!visited.Contains(right))
+                {
+                    if (right == n - 1)
+                    {
+                        return jumps + 1;
+                    }
+
+                    visited.Add(right);
+                    queue.Enqueue((right, jumps + 1));
+                }
+            }
+
+            // Prime teleportation
+            int currentValue = nums[index];
+            if (primeValues.Contains(currentValue) && usedPrimeTeleport.Add(currentValue))
+            {
+                if (indicesByPrime.TryGetValue(currentValue, out var teleportTargets))
+                {
+                    foreach (int neighbor in teleportTargets)
+                    {
+                        if (!visited.Contains(neighbor))
+                        {
+                            if (neighbor == n - 1)
+                            {
+                                return jumps + 1;
+                            }
+
+                            visited.Add(neighbor);
+                            queue.Enqueue((neighbor, jumps + 1));
+                        }
+                    }
                 }
             }
         }
@@ -46,71 +107,93 @@ public class MinimumJumpsToReachEndViaPrimeTeleportation
         return -1; // If we cannot reach the end
     }
 
-    private static Dictionary<int, List<int>> PopulateGraph(int[] nums)
-    {
-        int n = nums.Length;
-        var graph = new Dictionary<int, List<int>>();
-        var positions = new Dictionary<int, List<int>>();
-
-        for (int i = 0; i < n; i++)
-        {
-            graph[i] = [];
-
-            if (i > 0)
-            {
-                graph[i].Add(i - 1);
-            }
-            if (i < n - 1)
-            {
-                graph[i].Add(i + 1);
-            }
-        }
-
-        for (int i = 0; i < n; i++)
-        {
-            if (!positions.ContainsKey(nums[i]))
-            {
-                positions[nums[i]] = [];
-            }
-            positions[nums[i]].Add(i);
-        }
-
-        foreach (var kvp in positions)
-        {
-            int num = kvp.Key;
-            if (IsPrime(num))
-            {
-                var divisiblePositions = new List<int>();
-                foreach (var otherKvp in positions)
-                {
-                    if (otherKvp.Key % num == 0)
-                    {
-                        divisiblePositions.AddRange(otherKvp.Value);
-                    }
-                }
-
-                foreach (int index in kvp.Value)
-                {
-                    foreach (int otherIndex in divisiblePositions)
-                    {
-                        if (index != otherIndex)
-                        {
-                            graph[index].Add(otherIndex);
-                        }
-                    }
-                }
-            }
-        }
-        return graph;
-    }
-
     private static bool IsPrime(int num)
     {
         if (num <= 1) return false;
-        for (int i = 2; i * i <= num; i++)
+        if (num == 2) return true;
+        if (num % 2 == 0) return false;
+        for (int i = 3; i * i <= num; i += 2)
         {
             if (num % i == 0) return false;
         }
         return true;
+    }
+
+    private static Dictionary<int, List<int>> BuildIndicesByPrimeFactor(int[] nums, HashSet<int> primeValues, int maxValue)
+    {
+        var result = new Dictionary<int, List<int>>();
+        if (primeValues.Count == 0 || maxValue < 2)
+        {
+            return result;
+        }
+
+        int[] smallestPrimeFactor = BuildSmallestPrimeFactor(maxValue);
+
+        for (int i = 0; i < nums.Length; i++)
+        {
+            int value = nums[i];
+            if (value < 2)
+            {
+                continue;
+            }
+
+            int remaining = value;
+            while (remaining > 1)
+            {
+                int prime = smallestPrimeFactor[remaining];
+                if (prime == 0)
+                {
+                    prime = remaining;
+                }
+
+                if (primeValues.Contains(prime))
+                {
+                    if (!result.TryGetValue(prime, out var list))
+                    {
+                        list = [];
+                        result[prime] = list;
+                    }
+
+                    list.Add(i);
+                }
+
+                while (remaining % prime == 0)
+                {
+                    remaining /= prime;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    private static int[] BuildSmallestPrimeFactor(int maxValue)
+    {
+        int[] spf = new int[maxValue + 1];
+
+        for (int i = 2; i <= maxValue; i++)
+        {
+            if (spf[i] != 0)
+            {
+                continue;
+            }
+
+            spf[i] = i;
+
+            if ((long)i * i > maxValue)
+            {
+                continue;
+            }
+
+            for (int j = i * i; j <= maxValue; j += i)
+            {
+                if (spf[j] == 0)
+                {
+                    spf[j] = i;
+                }
+            }
+        }
+
+        return spf;
     }
 }
